@@ -1,100 +1,15 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const Product = require("./models/ProductModel");
 require("dotenv").config();
+const productRoutes = require("./routes/productRoutes");
 
 app.use(express.json());
 
+const port = process.env.PORT || 3000;
+
 /////////ROUTES/////////
-app.post("/products", async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-    res.status(201).json({
-      success: true,
-      data: product,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.get("/products/:id", async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    res.status(200).json({
-      success: true,
-      data: product,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.get("/products", async (req, res) => {
-  try {
-    const product = await Product.find();
-    res.status(200).json({
-      success: true,
-      data: product,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.put("/products/:id", async (req, res) => {
-  try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        error: "Product not found",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: product,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.delete("/products/:id", async (req, res) => {
-  try {
-    const product = await Product.findByIdAndDelete(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        error: "Product not found",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: product,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
+app.use("/api/products", productRoutes);
 
 app.get("/", (req, res) => {
   res.send("Whats up bro");
@@ -107,7 +22,7 @@ mongoose
   })
   .then(() => {
     console.log("DB Connected.");
-    app.listen(3000, () => {
+    app.listen(port, () => {
       console.log("server started");
     });
   })
