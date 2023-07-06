@@ -54,7 +54,7 @@ app.get("/products", async (req, res) => {
 
 app.put("/products/:id", async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id);
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body);
 
     if (!product) {
       return res.status(404).json({
